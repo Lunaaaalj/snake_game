@@ -5,18 +5,32 @@
 
 int main(void) {
   char ch;
+  coord head_pos; // TEMPORAL FOR TESTING POSITION OF SNAKE
+  snk_state state = SNK_NAN;
+  long long start, end;
   // Curses initialization
   initscr();
   curs_set(0);
   noecho();
-
   getmaxyx(stdscr, Y_STDSCR_MAX, X_STDSCR_MAX);
   win = newwin(V_LENGTH, H_LENGTH, Y_STDSCR_MAX / 2 - V_LENGTH / 2,
                X_STDSCR_MAX / 2 - H_LENGTH / 2);
+  nodelay(win, true);
   getmaxyx(win, Y_WIN_MAX, X_WIN_MAX);
   box(win, 0, 0);
-  mvwprintw(win, Y_WIN_MAX / 2, X_WIN_MAX / 2, "%c", HEAD_CHAR);
-
+  head_pos.y_pos = Y_WIN_MAX / 2;
+  head_pos.x_pos = X_WIN_MAX / 2;
+  update_scr(head_pos);
+  start = now();
+  while (true) {
+    CheckInput(wgetch(win), &state);
+    end = now();
+    if ((end - start) >= MOV_INTV && state != SNK_NAN) {
+      move_snk(&head_pos, state);
+      update_scr(head_pos);
+      start = end;
+    }
+  }
   endwin();
   return 0;
 }
