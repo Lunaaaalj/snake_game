@@ -7,6 +7,7 @@ WINDOW *win;
 const char HEAD_CHAR = '@';
 const char BODY_CHAR = '*';
 const int MOV_INTV = 100; //  10 movements per second
+const char TITLE[] = "Snake";
 
 void CheckInput(const char ch, snk_state *state) {
   switch (ch) {
@@ -23,7 +24,7 @@ void CheckInput(const char ch, snk_state *state) {
     *state = SNK_RIGHT;
     return;
   case 'q':
-    terminate_session("Bye!\n", 0);
+    terminate_session("Session terminated\n", 0);
   default:
     return;
   }
@@ -53,6 +54,7 @@ void update_scr(const coord pos) {
   wclear(win);
   mvwprintw(win, pos.y_pos, pos.x_pos, "%c", HEAD_CHAR);
   box(win, 0, 0);
+  mvwprintw(win, 0, X_WIN_MAX / 2 - strlen(TITLE) / 2, "%s", TITLE);
   wrefresh(win);
 }
 

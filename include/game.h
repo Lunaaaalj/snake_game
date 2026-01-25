@@ -4,7 +4,9 @@
 #include <curses.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
+#include <vector.h> // THIS IS A CUSTOM EXTERNAL DEPENDENCY CHECK README
 
 typedef enum snk_state {
   SNK_UP,
@@ -37,7 +39,11 @@ const extern char BODY_CHAR;
 
 /* constant that defines the time interval between the snake movements */
 
-const int MOV_INTV; // MILISECONDS
+const extern int MOV_INTV; // MILISECONDS
+
+/* Title */
+
+const extern char TITLE[];
 
 /* Expects to get a char input and decides where the character will move until
  * it recieves new input*/
