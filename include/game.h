@@ -33,9 +33,10 @@ extern int Y_WIN_MAX, X_WIN_MAX;
 /* The only window needed, main screen for the game */
 extern WINDOW *win;
 
-/* Characters that define how the snake is rendered */
+/* Characters that define how the snake and food is rendered  */
 const extern char HEAD_CHAR;
 const extern char BODY_CHAR;
+const extern char FOOD_CHAR;
 
 /* constant that defines the time interval between the snake movements */
 
@@ -62,10 +63,15 @@ void move_snk(coord *pos, const snk_state dir);
 
 /* Updates the render of the snake in the screen */
 
-void update_scr(const coord pos);
+void update_scr(const coord pos, const coord food_pos);
 
 /* Returns a long long representing the number of miliseconds since an Epoch */
 
 long long now(void);
+
+/* Generate a pseudo-random pair of coordinates for the rendering of snake food
+ */
+
+void snake_food_gen(coord *position);
 
 #endif // GAME_H
