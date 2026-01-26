@@ -35,8 +35,12 @@ extern WINDOW *win;
 
 /* Characters that define how the snake and food is rendered  */
 const extern char HEAD_CHAR;
-const extern char BODY_CHAR;
+const extern char SEG_CHAR;
 const extern char FOOD_CHAR;
+
+/* Sets the initial snake length */
+
+const extern int SNK_LEN;
 
 /* constant that defines the time interval between the snake movements */
 
@@ -59,11 +63,11 @@ void terminate_session(const char *msg, const int exit_code);
 
 /* updates the snake coordinates */
 
-void move_snk(coord *pos, const snk_state dir);
+void move_snk(void_vec *snake_vec, const snk_state dir);
 
 /* Updates the render of the snake in the screen */
 
-void update_scr(const coord pos, const coord food_pos);
+void update_scr(const void_vec *snake_pos, const coord food_pos);
 
 /* Returns a long long representing the number of miliseconds since an Epoch */
 
@@ -73,5 +77,18 @@ long long now(void);
  */
 
 void snake_food_gen(coord *position);
+
+/* Creates a new snake segment to the oposite direction of the last chunk to the
+ * next */
+
+void snake_grow(void_vec *snake_vector);
+
+/* Adds an initial snake length, this is quite important to avoid segmentation
+ * faults due to some functions trying to access to size - n index into the
+ * snake vector. The functions that handle snake vector could also be refactored
+ * to handle a snake with only one head, but, a snake head slitherin' around
+ * without a body? that's creepy as hell. */
+
+void init_sk_len(void_vec *snake_vector, const int len);
 
 #endif // GAME_H

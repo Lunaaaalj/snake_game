@@ -5,10 +5,11 @@ const int H_LENGTH = 35;
 int Y_STDSCR_MAX, X_STDSCR_MAX, Y_WIN_MAX, X_WIN_MAX;
 WINDOW *win;
 const char HEAD_CHAR = '@';
-const char BODY_CHAR = 'O';
+const char SEG_CHAR = 'O';
 const char FOOD_CHAR = '*';
 const int MOV_INTV = 100; //  10 movements per second
 const char TITLE[] = "Snake";
+const int SNK_LEN = 2;
 
 void CheckInput(const char ch, snk_state *state) {
   switch (ch) {
@@ -38,22 +39,30 @@ void terminate_session(const char *msg, const int exit_code) {
   exit(exit_code);
 }
 
-void move_snk(coord *pos, const snk_state dir) {
-  if (dir == SNK_DOWN && pos->y_pos < Y_WIN_MAX - 2)
-    pos->y_pos++;
-  else if (dir == SNK_UP && pos->y_pos > 1)
-    pos->y_pos--;
-  else if (dir == SNK_LEFT && pos->x_pos > 1)
-    pos->x_pos--;
-  else if (dir == SNK_RIGHT && pos->x_pos < X_WIN_MAX - 2)
-    pos->x_pos++;
-  else // if the direction is just nan
-    return;
+void move_snk(void_vec *snake_vec, const snk_state dir) {
+  for (int i = snake_vec->size - 1; i >= 1; --i) {
+    void_set(snake_vec, (coord *)void_get(snake_vec, i - 1), i);
+  }
+  coord head_pos = *(coord *)void_get(snake_vec, 0);
+  if (dir == SNK_DOWN && head_pos.y_pos < Y_WIN_MAX - 2)
+    head_pos.y_pos++;
+  else if (dir == SNK_UP && head_pos.y_pos > 1)
+    head_pos.y_pos--;
+  else if (dir == SNK_LEFT && head_pos.x_pos > 1)
+    head_pos.x_pos--;
+  else if (dir == SNK_RIGHT && head_pos.x_pos < X_WIN_MAX - 2)
+    head_pos.x_pos++;
+  void_set(snake_vec, &head_pos, 0);
 }
 
-void update_scr(const coord pos, const coord food_pos) {
+void update_scr(const void_vec *snake_pos, const coord food_pos) {
   wclear(win);
-  mvwprintw(win, pos.y_pos, pos.x_pos, "%c", HEAD_CHAR);
+  mvwprintw(win, (*(coord *)void_get(snake_pos, 0)).y_pos,
+            (*(coord *)void_get(snake_pos, 0)).x_pos, "%c", HEAD_CHAR);
+  for (int i = 1; i < snake_pos->size; ++i) {
+    mvwprintw(win, (*(coord *)void_get(snake_pos, i)).y_pos,
+              (*(coord *)void_get(snake_pos, i)).x_pos, "%c", SEG_CHAR);
+  }
   mvwprintw(win, food_pos.y_pos, food_pos.x_pos, "%c", FOOD_CHAR);
   box(win, 0, 0);
   mvwprintw(win, 0, X_WIN_MAX / 2 - strlen(TITLE) / 2, "%s", TITLE);
@@ -70,4 +79,22 @@ void snake_food_gen(coord *position) {
 
   position->x_pos = rand() % (X_WIN_MAX - 2) + 1;
   position->y_pos = rand() % (Y_WIN_MAX - 2) + 1;
+}
+
+void snake_grow(void_vec *snake_vector) {
+  coord second_to_last =
+      *(coord *)void_get(snake_vector, snake_vector->size - 2);
+  coord last = *(coord *)void_get(snake_vector, snake_vector->size - 1);
+  int y_diff = last.y_pos - second_to_last.y_pos;
+  int x_diff = last.x_pos - second_to_last.x_pos;
+  coord new_pos = {.y_pos = last.y_pos + y_diff, .x_pos = last.x_pos + x_diff};
+  void_append(snake_vector, &new_pos);
+}
+
+void init_sk_len(void_vec *snake_vector, const int len) {
+  coord head_pos = *(coord *)void_get(snake_vector, 0);
+  coord new_seg = {.y_pos = head_pos.y_pos, .x_pos = head_pos.x_pos};
+  for (int i = 0; i < len - 1; ++i) {
+    void_append(snake_vector, &new_seg);
+  }
 }
