@@ -38,17 +38,20 @@ void terminate_session(const char *msg, const int exit_code) {
   exit(exit_code);
 }
 
-void move_snk(coord *pos, const snk_state dir) {
-  if (dir == SNK_DOWN && pos->y_pos < Y_WIN_MAX - 2)
-    pos->y_pos++;
-  else if (dir == SNK_UP && pos->y_pos > 1)
-    pos->y_pos--;
-  else if (dir == SNK_LEFT && pos->x_pos > 1)
-    pos->x_pos--;
-  else if (dir == SNK_RIGHT && pos->x_pos < X_WIN_MAX - 2)
-    pos->x_pos++;
-  else // if the direction is just nan
-    return;
+void move_snk(void_vec *snake_vec, const snk_state dir) {
+  for (int i = snake_vec->size - 1; i-- >= 1;) {
+    void_set(snake_vec, (coord *)void_get(snake_vec, i - 1), i);
+  }
+  coord head_pos = *(coord *)void_get(snake_vec, 0);
+  if (dir == SNK_DOWN && head_pos.y_pos < Y_WIN_MAX - 2)
+    head_pos.y_pos++;
+  else if (dir == SNK_UP && head_pos.y_pos > 1)
+    head_pos.y_pos--;
+  else if (dir == SNK_LEFT && head_pos.x_pos > 1)
+    head_pos.x_pos--;
+  else if (dir == SNK_RIGHT && head_pos.x_pos < X_WIN_MAX - 2)
+    head_pos.x_pos++;
+  void_set(snake_vec, &head_pos, 0);
 }
 
 void update_scr(const void_vec *snake_pos, const coord food_pos) {

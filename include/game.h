@@ -59,7 +59,7 @@ void terminate_session(const char *msg, const int exit_code);
 
 /* updates the snake coordinates */
 
-void move_snk(coord *pos, const snk_state dir);
+void move_snk(void_vec *snake_vec, const snk_state dir);
 
 /* Updates the render of the snake in the screen */
 
