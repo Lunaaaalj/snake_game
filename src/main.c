@@ -37,6 +37,8 @@ int main(void) {
         snake_grow(&snake_pos);
         snake_food_gen(&food_pos);
       }
+      if (snk_collided(&snake_pos))
+        terminate_session("You lost!", 0);
       update_scr(&snake_pos, food_pos);
       start = end;
     }

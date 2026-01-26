@@ -91,4 +91,9 @@ void snake_grow(void_vec *snake_vector);
 
 void init_sk_len(void_vec *snake_vector, const int len);
 
+/* Will check for collisions in the borders of the window or with its own
+ * segments */
+
+bool snk_collided(const void_vec *snk_vec);
+
 #endif // GAME_H
