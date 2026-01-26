@@ -71,3 +71,13 @@ void snake_food_gen(coord *position) {
   position->x_pos = rand() % (X_WIN_MAX - 2) + 1;
   position->y_pos = rand() % (Y_WIN_MAX - 2) + 1;
 }
+
+void snake_grow(void_vec *snake_vector) {
+  coord second_to_last =
+      *(coord *)void_get(&snake_vector, snake_vector->size - 2);
+  coord last = *(coord *)void_get(&snake_vector, snake_vector->size - 1);
+  int y_diff = last.y_pos - second_to_last.y_pos;
+  int x_diff = last.x_pos - second_to_last.x_pos;
+  coord new_pos = {.y_pos = last.y_pos + y_diff, .x_pos = last.x_pos - x_diff};
+  void_append(&snake_vector, &new_pos);
+}
