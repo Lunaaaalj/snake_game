@@ -4,8 +4,8 @@ const int V_LENGTH = 20;
 const int H_LENGTH = 35;
 int Y_STDSCR_MAX, X_STDSCR_MAX, Y_WIN_MAX, X_WIN_MAX;
 WINDOW *win;
-const char HEAD_CHAR = '@';
-const char SEG_CHAR = 'O';
+const char HEAD_CHAR = '#';
+const char SEG_CHAR = '#';
 const char FOOD_CHAR = '*';
 const int MOV_INTV = 100; //  10 movements per second
 const char TITLE[] = "Snake";
