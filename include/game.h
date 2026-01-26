@@ -38,6 +38,10 @@ const extern char HEAD_CHAR;
 const extern char SEG_CHAR;
 const extern char FOOD_CHAR;
 
+/* Sets the initial snake length */
+
+const extern int SNK_LEN;
+
 /* constant that defines the time interval between the snake movements */
 
 const extern int MOV_INTV; // MILISECONDS
@@ -78,5 +82,13 @@ void snake_food_gen(coord *position);
  * next */
 
 void snake_grow(void_vec *snake_vector);
+
+/* Adds an initial snake length, this is quite important to avoid segmentation
+ * faults due to some functions trying to access to size - n index into the
+ * snake vector. The functions that handle snake vector could also be refactored
+ * to handle a snake with only one head, but, a snake head slitherin' around
+ * without a body? that's creepy as hell. */
+
+void init_sk_len(void_vec *snake_vector, const int len);
 
 #endif // GAME_H

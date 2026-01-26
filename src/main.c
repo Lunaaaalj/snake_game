@@ -9,7 +9,7 @@ int main(void) {
   snk_state state = SNK_NAN;
   long long start, end;
   void_vec snake_pos;
-  init_void_vector(&snake_pos, 1, sizeof(coord));
+  init_void_vector(&snake_pos, 4, sizeof(coord));
   coord food_pos;
   // Curses initialization
   initscr();
@@ -25,12 +25,18 @@ int main(void) {
   void_append(&snake_pos, &head_coords);
   snake_food_gen(&food_pos);
   update_scr(&snake_pos, food_pos);
+  init_sk_len(&snake_pos, SNK_LEN);
   start = now();
   while (true) {
     CheckInput(wgetch(win), &state);
     end = now();
     if ((end - start) >= MOV_INTV && state != SNK_NAN) {
       move_snk(&snake_pos, state);
+      if ((*(coord *)void_get(&snake_pos, 0)).y_pos == food_pos.y_pos &&
+          (*(coord *)void_get(&snake_pos, 0)).x_pos == food_pos.x_pos) {
+        snake_grow(&snake_pos);
+        snake_food_gen(&food_pos);
+      }
       update_scr(&snake_pos, food_pos);
       start = end;
     }

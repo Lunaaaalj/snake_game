@@ -9,6 +9,7 @@ const char SEG_CHAR = 'O';
 const char FOOD_CHAR = '*';
 const int MOV_INTV = 100; //  10 movements per second
 const char TITLE[] = "Snake";
+const extern int SNK_LEN = 2;
 
 void CheckInput(const char ch, snk_state *state) {
   switch (ch) {
@@ -88,4 +89,14 @@ void snake_grow(void_vec *snake_vector) {
   int x_diff = last.x_pos - second_to_last.x_pos;
   coord new_pos = {.y_pos = last.y_pos + y_diff, .x_pos = last.x_pos + x_diff};
   void_append(snake_vector, &new_pos);
+}
+
+void init_sk_len(void_vec *snake_vector, const int len) {
+  coord head_pos = *(coord *)void_get(snake_vector, 0);
+  coord new_seg;
+  for (int i = 0; i < len; ++i) {
+    new_seg.y_pos = head_pos.y_pos;
+    new_seg.x_pos = head_pos.x_pos;
+    void_append(snake_vector, &new_seg);
+  }
 }
