@@ -51,9 +51,10 @@ void move_snk(coord *pos, const snk_state dir) {
     return;
 }
 
-void update_scr(const coord pos) {
+void update_scr(const coord pos, const coord food_pos) {
   wclear(win);
   mvwprintw(win, pos.y_pos, pos.x_pos, "%c", HEAD_CHAR);
+  mvwprintw(win, food_pos.y_pos, food_pos.x_pos, "%c", FOOD_CHAR);
   box(win, 0, 0);
   mvwprintw(win, 0, X_WIN_MAX / 2 - strlen(TITLE) / 2, "%s", TITLE);
   wrefresh(win);
@@ -66,7 +67,7 @@ long long now(void) {
 }
 
 void snake_food_gen(coord *position) {
-  srand(now());
-  position->x_pos = rand() % (X_WIN_MAX - 1) + 1;
-  position->y_pos = rand() % (Y_WIN_MAX - 1) + 1;
+
+  position->x_pos = rand() % (X_WIN_MAX - 2) + 1;
+  position->y_pos = rand() % (Y_WIN_MAX - 2) + 1;
 }

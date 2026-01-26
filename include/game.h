@@ -63,7 +63,7 @@ void move_snk(coord *pos, const snk_state dir);
 
 /* Updates the render of the snake in the screen */
 
-void update_scr(const coord pos);
+void update_scr(const coord pos, const coord food_pos);
 
 /* Returns a long long representing the number of miliseconds since an Epoch */
 

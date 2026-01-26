@@ -4,6 +4,7 @@
 /* Formated with clang-format using LLVM conventions */
 
 int main(void) {
+  srand(now());
   char ch;
   coord head_pos; // TEMPORAL FOR TESTING POSITION OF SNAKE
   snk_state state = SNK_NAN;
@@ -20,14 +21,16 @@ int main(void) {
   box(win, 0, 0);
   head_pos.y_pos = Y_WIN_MAX / 2;
   head_pos.x_pos = X_WIN_MAX / 2;
-  update_scr(head_pos);
+  coord food_pos;
+  snake_food_gen(&food_pos);
+  update_scr(head_pos, food_pos);
   start = now();
   while (true) {
     CheckInput(wgetch(win), &state);
     end = now();
     if ((end - start) >= MOV_INTV && state != SNK_NAN) {
       move_snk(&head_pos, state);
-      update_scr(head_pos);
+      update_scr(head_pos, food_pos);
       start = end;
     }
   }
