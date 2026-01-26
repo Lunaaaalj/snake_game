@@ -35,7 +35,7 @@ extern WINDOW *win;
 
 /* Characters that define how the snake and food is rendered  */
 const extern char HEAD_CHAR;
-const extern char BODY_CHAR;
+const extern char SEG_CHAR;
 const extern char FOOD_CHAR;
 
 /* constant that defines the time interval between the snake movements */
@@ -63,7 +63,7 @@ void move_snk(coord *pos, const snk_state dir);
 
 /* Updates the render of the snake in the screen */
 
-void update_scr(const coord snake_pos, const coord food_pos);
+void update_scr(const void_vec *snake_pos, const coord food_pos);
 
 /* Returns a long long representing the number of miliseconds since an Epoch */
 
@@ -74,7 +74,7 @@ long long now(void);
 
 void snake_food_gen(coord *position);
 
-/* Creates a new snake chunk to the oposite direction of the last chunk to the
+/* Creates a new snake segment to the oposite direction of the last chunk to the
  * next */
 
 void snake_grow(const void_vec *snake_vector);
