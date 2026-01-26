@@ -34,8 +34,8 @@ extern int Y_WIN_MAX, X_WIN_MAX;
 extern WINDOW *win;
 
 /* Characters that define how the snake and food is rendered  */
-const extern char HEAD_CHAR;
-const extern char SEG_CHAR;
+extern char HEAD_CHAR;
+extern char SEG_CHAR;
 const extern char FOOD_CHAR;
 
 /* Sets the initial snake length */

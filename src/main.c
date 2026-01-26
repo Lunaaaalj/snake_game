@@ -19,6 +19,7 @@ int main(void) {
   win = newwin(V_LENGTH, H_LENGTH, Y_STDSCR_MAX / 2 - V_LENGTH / 2,
                X_STDSCR_MAX / 2 - H_LENGTH / 2);
   nodelay(win, true);
+  keypad(win, true);
   getmaxyx(win, Y_WIN_MAX, X_WIN_MAX);
   box(win, 0, 0);
   coord head_coords = {.y_pos = Y_WIN_MAX / 2, .x_pos = X_WIN_MAX / 2};
@@ -37,8 +38,29 @@ int main(void) {
         snake_grow(&snake_pos);
         snake_food_gen(&food_pos);
       }
-      if (snk_collided(&snake_pos))
-        terminate_session("You lost!", 0);
+      if (snk_collided(&snake_pos)) {
+        HEAD_CHAR = 'X';
+        SEG_CHAR = 'X';
+        update_scr(&snake_pos, food_pos);
+        while ((ch = wgetch(win)) != 'q') {
+          if (ch == KEY_ENTER || ch == '\n') {
+            free_void_vector(&snake_pos);
+            init_void_vector(&snake_pos, 4, sizeof(coord));
+            coord head_coords = {.y_pos = Y_WIN_MAX / 2,
+                                 .x_pos = X_WIN_MAX / 2};
+            void_append(&snake_pos, &head_coords);
+            snake_food_gen(&food_pos);
+            HEAD_CHAR = '#';
+            SEG_CHAR = '#';
+            update_scr(&snake_pos, food_pos);
+            init_sk_len(&snake_pos, SNK_LEN);
+            state = SNK_NAN;
+            break;
+          }
+        }
+        if (ch = 'q')
+          terminate_session("Session Terminated", 0);
+      }
       update_scr(&snake_pos, food_pos);
       start = end;
     }
