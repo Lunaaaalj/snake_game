@@ -57,7 +57,7 @@ void move_snk(void_vec *snake_vec, const snk_state dir) {
 void update_scr(const void_vec *snake_pos, const coord food_pos) {
   wclear(win);
   mvwprintw(win, (*(coord *)void_get(snake_pos, 0)).y_pos,
-            (*(coord *)void_get(&snake_pos, 0)).x_pos, "%c", HEAD_CHAR);
+            (*(coord *)void_get(snake_pos, 0)).x_pos, "%c", HEAD_CHAR);
   for (int i = 1; i < snake_pos->size; ++i) {
     mvwprintw(win, (*(coord *)void_get(snake_pos, i)).y_pos,
               (*(coord *)void_get(snake_pos, i)).x_pos, "%c", SEG_CHAR);

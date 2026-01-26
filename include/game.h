@@ -77,6 +77,6 @@ void snake_food_gen(coord *position);
 /* Creates a new snake segment to the oposite direction of the last chunk to the
  * next */
 
-void snake_grow(const void_vec *snake_vector);
+void snake_grow(void_vec *snake_vector);
 
 #endif // GAME_H

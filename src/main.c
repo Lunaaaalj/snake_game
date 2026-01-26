@@ -24,14 +24,14 @@ int main(void) {
   coord head_coords = {.y_pos = Y_WIN_MAX / 2, .x_pos = X_WIN_MAX / 2};
   void_append(&snake_pos, &head_coords);
   snake_food_gen(&food_pos);
-  update_scr(head_pos, food_pos);
+  update_scr(&snake_pos, food_pos);
   start = now();
   while (true) {
     CheckInput(wgetch(win), &state);
     end = now();
     if ((end - start) >= MOV_INTV && state != SNK_NAN) {
-      move_snk(&head_pos, state);
-      update_scr(head_pos, food_pos);
+      move_snk(&snake_pos, state);
+      update_scr(&snake_pos, food_pos);
       start = end;
     }
   }
