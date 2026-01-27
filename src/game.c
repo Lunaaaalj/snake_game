@@ -2,6 +2,8 @@
 
 const int V_LENGTH = 20;
 const int H_LENGTH = 35;
+const int MIN_TERMINAL_HEIGHT = 22; // V_LENGTH + 2 for safety
+const int MIN_TERMINAL_WIDTH = 37;  // H_LENGTH + 2 for safety
 int Y_STDSCR_MAX, X_STDSCR_MAX, Y_WIN_MAX, X_WIN_MAX;
 WINDOW *win;
 char HEAD_CHAR = '#';
@@ -11,7 +13,7 @@ const int MOV_INTV = 100; //  10 movements per second
 const char TITLE[] = "Snake";
 const int SNK_LEN = 2;
 
-void CheckInput(const int ch, snk_state *state) {
+bool CheckInput(const int ch, snk_state *state) {
   if ((ch == 'j' || ch == KEY_DOWN) && *state != SNK_UP)
     *state = SNK_DOWN;
   else if ((ch == 'k' || ch == KEY_UP) && *state != SNK_DOWN)
@@ -22,8 +24,18 @@ void CheckInput(const int ch, snk_state *state) {
     *state = SNK_RIGHT;
   else if (ch == 'q')
     terminate_session("Exited successfully", 0);
-  else
-    return;
+  else if (ch == KEY_RESIZE) {
+    if (!handle_resize()) {
+      char error_msg[256];
+      snprintf(error_msg, sizeof(error_msg),
+               "Error: Terminal size too small. Minimum required: %d columns x "
+               "%d rows",
+               MIN_TERMINAL_WIDTH, MIN_TERMINAL_HEIGHT);
+      terminate_session(error_msg, 1);
+    }
+    return true; /* Indicate that a resize was handled */
+  }
+  return false;
 }
 
 void terminate_session(const char *msg, const int exit_code) {
@@ -123,4 +135,31 @@ bool snk_collided(const void_vec *snk_vec) {
       return true;
   }
   return false;
+}
+
+bool handle_resize(void) {
+  /* Get the new terminal dimensions */
+  getmaxyx(stdscr, Y_STDSCR_MAX, X_STDSCR_MAX);
+
+  /* Check if terminal is large enough */
+  if (Y_STDSCR_MAX < MIN_TERMINAL_HEIGHT ||
+      X_STDSCR_MAX < MIN_TERMINAL_WIDTH) {
+    return false;
+  }
+
+  /* Delete the old window and create a new one centered in the resized terminal
+   */
+  delwin(win);
+  win = newwin(V_LENGTH, H_LENGTH, Y_STDSCR_MAX / 2 - V_LENGTH / 2,
+               X_STDSCR_MAX / 2 - H_LENGTH / 2);
+  nodelay(win, true);
+  keypad(win, true);
+
+  /* Update window dimensions */
+  getmaxyx(win, Y_WIN_MAX, X_WIN_MAX);
+
+  /* Refresh the standard screen and the window */
+  refresh();
+
+  return true;
 }

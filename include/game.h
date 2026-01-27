@@ -51,9 +51,10 @@ const extern int MOV_INTV; // MILISECONDS
 const extern char TITLE[];
 
 /* Expects to get a char input and decides where the character will move until
- * it recieves new input*/
+ * it recieves new input. Returns true if a resize event was handled, false
+ * otherwise. */
 
-void CheckInput(const int ch, snk_state *state);
+bool CheckInput(const int ch, snk_state *state);
 
 /* Recieves a mesage (either error msg or a succesful exit msg), terminates the
  * game and curses window and stdscr prints the mesage in the terminal buffer
@@ -95,5 +96,15 @@ void init_sk_len(void_vec *snake_vector, const int len);
  * segments */
 
 bool snk_collided(const void_vec *snk_vec);
+
+/* Handles terminal resize events by updating screen dimensions and re-centering
+ * the game window. Returns true if resize was successful, false if terminal is
+ * too small. */
+
+bool handle_resize(void);
+
+/* Minimum terminal dimensions required to display the game */
+extern const int MIN_TERMINAL_HEIGHT;
+extern const int MIN_TERMINAL_WIDTH;
 
 #endif // GAME_H
