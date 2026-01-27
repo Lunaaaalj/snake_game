@@ -1,1 +1,0 @@
-/home/runner/work/snake_game/.codeql-scratch/dbs/cpp/working/autobuild/bin/cc -O3 -DNDEBUG -fsanitize=address -Wl,--dependency-file=CMakeFiles/snake.dir/link.d CMakeFiles/snake.dir/main.c.o -o snake  -lcurses /usr/lib/x86_64-linux-gnu/libform.so -lcvector
