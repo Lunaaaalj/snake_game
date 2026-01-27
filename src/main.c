@@ -8,6 +8,8 @@ int main(void) {
   char ch;
   snk_state state = SNK_NAN;
   long long start, end;
+  void_vec snake_pos;
+  init_void_vector(&snake_pos, 4, sizeof(coord));
   coord food_pos;
   // Curses initialization
   initscr();
@@ -19,6 +21,7 @@ int main(void) {
   if (Y_STDSCR_MAX < MIN_TERMINAL_HEIGHT ||
       X_STDSCR_MAX < MIN_TERMINAL_WIDTH) {
     endwin();
+    free_void_vector(&snake_pos);
     printf("Error: Terminal size too small. Minimum required: %d columns x %d "
            "rows\n",
            MIN_TERMINAL_WIDTH, MIN_TERMINAL_HEIGHT);
@@ -26,8 +29,6 @@ int main(void) {
     return 1;
   }
 
-  void_vec snake_pos;
-  init_void_vector(&snake_pos, 4, sizeof(coord));
   win = newwin(V_LENGTH, H_LENGTH, Y_STDSCR_MAX / 2 - V_LENGTH / 2,
                X_STDSCR_MAX / 2 - H_LENGTH / 2);
   nodelay(win, true);
