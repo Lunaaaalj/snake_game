@@ -96,4 +96,14 @@ void init_sk_len(void_vec *snake_vector, const int len);
 
 bool snk_collided(const void_vec *snk_vec);
 
+/* Handles terminal resize events by updating screen dimensions and re-centering
+ * the game window. Returns true if resize was successful, false if terminal is
+ * too small. */
+
+bool handle_resize(void);
+
+/* Minimum terminal dimensions required to display the game */
+extern const int MIN_TERMINAL_HEIGHT;
+extern const int MIN_TERMINAL_WIDTH;
+
 #endif // GAME_H

@@ -2,6 +2,8 @@
 
 const int V_LENGTH = 20;
 const int H_LENGTH = 35;
+const int MIN_TERMINAL_HEIGHT = 22; // V_LENGTH + 2 for safety
+const int MIN_TERMINAL_WIDTH = 37;  // H_LENGTH + 2 for safety
 int Y_STDSCR_MAX, X_STDSCR_MAX, Y_WIN_MAX, X_WIN_MAX;
 WINDOW *win;
 char HEAD_CHAR = '#';
@@ -22,7 +24,13 @@ void CheckInput(const int ch, snk_state *state) {
     *state = SNK_RIGHT;
   else if (ch == 'q')
     terminate_session("Exited successfully", 0);
-  else
+  else if (ch == KEY_RESIZE) {
+    if (!handle_resize()) {
+      terminate_session("Error: Terminal size too small. Minimum required: 37 "
+                        "columns x 22 rows",
+                        1);
+    }
+  } else
     return;
 }
 
@@ -123,4 +131,31 @@ bool snk_collided(const void_vec *snk_vec) {
       return true;
   }
   return false;
+}
+
+bool handle_resize(void) {
+  /* Get the new terminal dimensions */
+  getmaxyx(stdscr, Y_STDSCR_MAX, X_STDSCR_MAX);
+
+  /* Check if terminal is large enough */
+  if (Y_STDSCR_MAX < MIN_TERMINAL_HEIGHT ||
+      X_STDSCR_MAX < MIN_TERMINAL_WIDTH) {
+    return false;
+  }
+
+  /* Delete the old window and create a new one centered in the resized terminal
+   */
+  delwin(win);
+  win = newwin(V_LENGTH, H_LENGTH, Y_STDSCR_MAX / 2 - V_LENGTH / 2,
+               X_STDSCR_MAX / 2 - H_LENGTH / 2);
+  nodelay(win, true);
+  keypad(win, true);
+
+  /* Update window dimensions */
+  getmaxyx(win, Y_WIN_MAX, X_WIN_MAX);
+
+  /* Refresh the standard screen and the window */
+  refresh();
+
+  return true;
 }

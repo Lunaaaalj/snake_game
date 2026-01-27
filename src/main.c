@@ -16,6 +16,18 @@ int main(void) {
   curs_set(0);
   noecho();
   getmaxyx(stdscr, Y_STDSCR_MAX, X_STDSCR_MAX);
+
+  /* Check if terminal is large enough at startup */
+  if (Y_STDSCR_MAX < MIN_TERMINAL_HEIGHT ||
+      X_STDSCR_MAX < MIN_TERMINAL_WIDTH) {
+    endwin();
+    printf("Error: Terminal size too small. Minimum required: %d columns x %d "
+           "rows\n",
+           MIN_TERMINAL_WIDTH, MIN_TERMINAL_HEIGHT);
+    printf("Current size: %d columns x %d rows\n", X_STDSCR_MAX, Y_STDSCR_MAX);
+    return 1;
+  }
+
   win = newwin(V_LENGTH, H_LENGTH, Y_STDSCR_MAX / 2 - V_LENGTH / 2,
                X_STDSCR_MAX / 2 - H_LENGTH / 2);
   nodelay(win, true);
@@ -43,7 +55,15 @@ int main(void) {
         SEG_CHAR = 'X';
         update_scr(&snake_pos, food_pos);
         while ((ch = wgetch(win)) != 'q') {
-          if (ch == KEY_ENTER || ch == '\n') {
+          if (ch == KEY_RESIZE) {
+            if (!handle_resize()) {
+              terminate_session(
+                  "Error: Terminal size too small. Minimum required: 37 "
+                  "columns x 22 rows",
+                  1);
+            }
+            update_scr(&snake_pos, food_pos);
+          } else if (ch == KEY_ENTER || ch == '\n') {
             free_void_vector(&snake_pos);
             init_void_vector(&snake_pos, 4, sizeof(coord));
             coord head_coords = {.y_pos = Y_WIN_MAX / 2,
