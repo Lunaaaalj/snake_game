@@ -69,10 +69,24 @@ long long now(void) {
   return time_now.tv_sec * 1000LL + time_now.tv_nsec / 1000000LL;
 }
 
-void snake_food_gen(coord *position) {
-
-  position->x_pos = rand() % (X_WIN_MAX - 2) + 1;
-  position->y_pos = rand() % (Y_WIN_MAX - 2) + 1;
+void snake_food_gen(coord *position, const void_vec *snake_pos) {
+  coord seg_pos;
+  bool collision = false;
+  while (true) {
+    position->x_pos = rand() % (X_WIN_MAX - 2) + 1;
+    position->y_pos = rand() % (Y_WIN_MAX - 2) + 1;
+    for (int i = 0; i < snake_pos->size; ++i) {
+      seg_pos = *(coord *)void_get(snake_pos, i);
+      if (position->x_pos == seg_pos.x_pos &&
+          position->y_pos == seg_pos.y_pos) {
+        collision = true;
+        break;
+      } else
+        collision = false;
+    }
+    if (!collision)
+      break;
+  }
 }
 
 void snake_grow(void_vec *snake_vector) {

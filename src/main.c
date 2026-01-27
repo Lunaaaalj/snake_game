@@ -24,7 +24,7 @@ int main(void) {
   box(win, 0, 0);
   coord head_coords = {.y_pos = Y_WIN_MAX / 2, .x_pos = X_WIN_MAX / 2};
   void_append(&snake_pos, &head_coords);
-  snake_food_gen(&food_pos);
+  snake_food_gen(&food_pos, &snake_pos);
   update_scr(&snake_pos, food_pos);
   init_sk_len(&snake_pos, SNK_LEN);
   start = now();
@@ -36,7 +36,7 @@ int main(void) {
       if ((*(coord *)void_get(&snake_pos, 0)).y_pos == food_pos.y_pos &&
           (*(coord *)void_get(&snake_pos, 0)).x_pos == food_pos.x_pos) {
         snake_grow(&snake_pos);
-        snake_food_gen(&food_pos);
+        snake_food_gen(&food_pos, &snake_pos);
       }
       if (snk_collided(&snake_pos)) {
         HEAD_CHAR = 'X';
@@ -49,7 +49,7 @@ int main(void) {
             coord head_coords = {.y_pos = Y_WIN_MAX / 2,
                                  .x_pos = X_WIN_MAX / 2};
             void_append(&snake_pos, &head_coords);
-            snake_food_gen(&food_pos);
+            snake_food_gen(&food_pos, &snake_pos);
             HEAD_CHAR = '#';
             SEG_CHAR = '#';
             update_scr(&snake_pos, food_pos);
