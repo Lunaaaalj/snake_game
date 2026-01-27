@@ -1,0 +1,3 @@
+/home/runner/work/snake_game/snake_game/src/_codeql_build_dir/CMakeFiles/snake.dir
+/home/runner/work/snake_game/snake_game/src/_codeql_build_dir/CMakeFiles/edit_cache.dir
+/home/runner/work/snake_game/snake_game/src/_codeql_build_dir/CMakeFiles/rebuild_cache.dir
