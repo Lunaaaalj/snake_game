@@ -58,7 +58,7 @@ int main(void) {
             break;
           }
         }
-        if (ch = 'q')
+        if (ch == 'q')
           terminate_session("Session Terminated", 0);
       }
       update_scr(&snake_pos, food_pos);

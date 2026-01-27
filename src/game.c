@@ -21,7 +21,7 @@ void CheckInput(const char ch, snk_state *state) {
   else if (ch == 'l' && *state != SNK_LEFT)
     *state = SNK_RIGHT;
   else if (ch == 'q')
-    terminate_session("Exited succesfully", 0);
+    terminate_session("Exited successfully", 0);
   else
     return;
 }
@@ -95,12 +95,17 @@ void init_sk_len(void_vec *snake_vector, const int len) {
 
 bool snk_collided(const void_vec *snk_vec) {
   coord head_pos = *(coord *)void_get(snk_vec, 0);
+
+  /* Check wall collision once for the head position */
+  if (head_pos.y_pos <= 0 || head_pos.y_pos >= Y_WIN_MAX ||
+      head_pos.x_pos <= 0 || head_pos.x_pos >= X_WIN_MAX) {
+    return true;
+  }
+
+  /* Check collision with snake body segments */
   for (int i = 1; i < snk_vec->size; ++i) {
     coord seg_pos = *(coord *)void_get(snk_vec, i);
     if (head_pos.y_pos == seg_pos.y_pos && head_pos.x_pos == seg_pos.x_pos)
-      return true;
-    else if (head_pos.y_pos <= 0 || head_pos.y_pos >= Y_WIN_MAX ||
-             head_pos.x_pos <= 0 || head_pos.x_pos >= X_WIN_MAX)
       return true;
   }
   return false;
