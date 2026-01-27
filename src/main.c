@@ -41,7 +41,10 @@ int main(void) {
   init_sk_len(&snake_pos, SNK_LEN);
   start = now();
   while (true) {
-    CheckInput(wgetch(win), &state);
+    if (CheckInput(wgetch(win), &state)) {
+      /* Resize occurred, redraw the screen */
+      update_scr(&snake_pos, food_pos);
+    }
     end = now();
     if ((end - start) >= MOV_INTV && state != SNK_NAN) {
       move_snk(&snake_pos, state);
@@ -57,10 +60,12 @@ int main(void) {
         while ((ch = wgetch(win)) != 'q') {
           if (ch == KEY_RESIZE) {
             if (!handle_resize()) {
-              terminate_session(
-                  "Error: Terminal size too small. Minimum required: 37 "
-                  "columns x 22 rows",
-                  1);
+              char error_msg[256];
+              snprintf(error_msg, sizeof(error_msg),
+                       "Error: Terminal size too small. Minimum required: %d "
+                       "columns x %d rows",
+                       MIN_TERMINAL_WIDTH, MIN_TERMINAL_HEIGHT);
+              terminate_session(error_msg, 1);
             }
             update_scr(&snake_pos, food_pos);
           } else if (ch == KEY_ENTER || ch == '\n') {

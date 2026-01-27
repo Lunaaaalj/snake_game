@@ -13,7 +13,7 @@ const int MOV_INTV = 100; //  10 movements per second
 const char TITLE[] = "Snake";
 const int SNK_LEN = 2;
 
-void CheckInput(const int ch, snk_state *state) {
+bool CheckInput(const int ch, snk_state *state) {
   if ((ch == 'j' || ch == KEY_DOWN) && *state != SNK_UP)
     *state = SNK_DOWN;
   else if ((ch == 'k' || ch == KEY_UP) && *state != SNK_DOWN)
@@ -26,12 +26,16 @@ void CheckInput(const int ch, snk_state *state) {
     terminate_session("Exited successfully", 0);
   else if (ch == KEY_RESIZE) {
     if (!handle_resize()) {
-      terminate_session("Error: Terminal size too small. Minimum required: 37 "
-                        "columns x 22 rows",
-                        1);
+      char error_msg[256];
+      snprintf(error_msg, sizeof(error_msg),
+               "Error: Terminal size too small. Minimum required: %d columns x "
+               "%d rows",
+               MIN_TERMINAL_WIDTH, MIN_TERMINAL_HEIGHT);
+      terminate_session(error_msg, 1);
     }
-  } else
-    return;
+    return true; /* Indicate that a resize was handled */
+  }
+  return false;
 }
 
 void terminate_session(const char *msg, const int exit_code) {
