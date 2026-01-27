@@ -53,7 +53,7 @@ const extern char TITLE[];
 /* Expects to get a char input and decides where the character will move until
  * it recieves new input*/
 
-void CheckInput(const char ch, snk_state *state);
+void CheckInput(const int ch, snk_state *state);
 
 /* Recieves a mesage (either error msg or a succesful exit msg), terminates the
  * game and curses window and stdscr prints the mesage in the terminal buffer
