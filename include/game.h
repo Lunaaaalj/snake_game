@@ -34,8 +34,8 @@ extern int Y_WIN_MAX, X_WIN_MAX;
 extern WINDOW *win;
 
 /* Characters that define how the snake and food is rendered  */
-const extern char HEAD_CHAR;
-const extern char SEG_CHAR;
+extern char HEAD_CHAR;
+extern char SEG_CHAR;
 const extern char FOOD_CHAR;
 
 /* Sets the initial snake length */
@@ -90,5 +90,10 @@ void snake_grow(void_vec *snake_vector);
  * without a body? that's creepy as hell. */
 
 void init_sk_len(void_vec *snake_vector, const int len);
+
+/* Will check for collisions in the borders of the window or with its own
+ * segments */
+
+bool snk_collided(const void_vec *snk_vec);
 
 #endif // GAME_H

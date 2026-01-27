@@ -4,32 +4,26 @@ const int V_LENGTH = 20;
 const int H_LENGTH = 35;
 int Y_STDSCR_MAX, X_STDSCR_MAX, Y_WIN_MAX, X_WIN_MAX;
 WINDOW *win;
-const char HEAD_CHAR = '@';
-const char SEG_CHAR = 'O';
+char HEAD_CHAR = '#';
+char SEG_CHAR = '#';
 const char FOOD_CHAR = '*';
 const int MOV_INTV = 100; //  10 movements per second
 const char TITLE[] = "Snake";
 const int SNK_LEN = 2;
 
 void CheckInput(const char ch, snk_state *state) {
-  switch (ch) {
-  case 'j':
+  if (ch == 'j' && *state != SNK_UP)
     *state = SNK_DOWN;
-    return;
-  case 'k':
+  else if (ch == 'k' && *state != SNK_DOWN)
     *state = SNK_UP;
-    return;
-  case 'h':
+  else if (ch == 'h' && *state != SNK_RIGHT)
     *state = SNK_LEFT;
-    return;
-  case 'l':
+  else if (ch == 'l' && *state != SNK_LEFT)
     *state = SNK_RIGHT;
+  else if (ch == 'q')
+    terminate_session("Exited successfully", 0);
+  else
     return;
-  case 'q':
-    terminate_session("Session terminated\n", 0);
-  default:
-    return;
-  }
 }
 
 void terminate_session(const char *msg, const int exit_code) {
@@ -97,4 +91,22 @@ void init_sk_len(void_vec *snake_vector, const int len) {
   for (int i = 0; i < len - 1; ++i) {
     void_append(snake_vector, &new_seg);
   }
+}
+
+bool snk_collided(const void_vec *snk_vec) {
+  coord head_pos = *(coord *)void_get(snk_vec, 0);
+
+  /* Check wall collision once for the head position */
+  if (head_pos.y_pos <= 0 || head_pos.y_pos >= Y_WIN_MAX ||
+      head_pos.x_pos <= 0 || head_pos.x_pos >= X_WIN_MAX) {
+    return true;
+  }
+
+  /* Check collision with snake body segments */
+  for (int i = 1; i < snk_vec->size; ++i) {
+    coord seg_pos = *(coord *)void_get(snk_vec, i);
+    if (head_pos.y_pos == seg_pos.y_pos && head_pos.x_pos == seg_pos.x_pos)
+      return true;
+  }
+  return false;
 }
