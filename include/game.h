@@ -76,7 +76,7 @@ long long now(void);
 /* Generate a pseudo-random pair of coordinates for the rendering of snake food
  */
 
-void snake_food_gen(coord *position);
+void snake_food_gen(coord *position, const void_vec *snake_pos);
 
 /* Creates a new snake segment to the oposite direction of the last chunk to the
  * next */
