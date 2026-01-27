@@ -11,14 +11,14 @@ const int MOV_INTV = 100; //  10 movements per second
 const char TITLE[] = "Snake";
 const int SNK_LEN = 2;
 
-void CheckInput(const char ch, snk_state *state) {
-  if (ch == 'j' && *state != SNK_UP)
+void CheckInput(const int ch, snk_state *state) {
+  if ((ch == 'j' || ch == KEY_DOWN) && *state != SNK_UP)
     *state = SNK_DOWN;
-  else if (ch == 'k' && *state != SNK_DOWN)
+  else if ((ch == 'k' || ch == KEY_UP) && *state != SNK_DOWN)
     *state = SNK_UP;
-  else if (ch == 'h' && *state != SNK_RIGHT)
+  else if ((ch == 'h' || ch == KEY_LEFT) && *state != SNK_RIGHT)
     *state = SNK_LEFT;
-  else if (ch == 'l' && *state != SNK_LEFT)
+  else if ((ch == 'l' || ch == KEY_RIGHT) && *state != SNK_LEFT)
     *state = SNK_RIGHT;
   else if (ch == 'q')
     terminate_session("Exited successfully", 0);
