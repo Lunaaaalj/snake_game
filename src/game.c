@@ -13,15 +13,15 @@ const int MOV_INTV = 100; //  10 movements per second
 const char TITLE[] = "Snake";
 const int SNK_LEN = 2;
 
-bool CheckInput(const int ch, snk_state *state) {
+bool CheckInput(const int ch, snk_state *state,snk_state *requested) {
   if ((ch == 'j' || ch == KEY_DOWN) && *state != SNK_UP)
-    *state = SNK_DOWN;
+    *requested = SNK_DOWN;
   else if ((ch == 'k' || ch == KEY_UP) && *state != SNK_DOWN)
-    *state = SNK_UP;
+    *requested = SNK_UP;
   else if ((ch == 'h' || ch == KEY_LEFT) && *state != SNK_RIGHT)
-    *state = SNK_LEFT;
+    *requested = SNK_LEFT;
   else if ((ch == 'l' || ch == KEY_RIGHT) && *state != SNK_LEFT)
-    *state = SNK_RIGHT;
+    *requested = SNK_RIGHT;
   else if (ch == 'q')
     terminate_session("Exited successfully", 0);
   else if (ch == KEY_RESIZE) {
@@ -45,7 +45,7 @@ void terminate_session(const char *msg, const int exit_code) {
   exit(exit_code);
 }
 
-void move_snk(void_vec *snake_vec, const snk_state dir) {
+void move_snk(void_vec *snake_vec, const snk_state dir, snk_state *state) {
   for (int i = snake_vec->size - 1; i >= 1; --i) {
     void_set(snake_vec, (coord *)void_get(snake_vec, i - 1), i);
   }
@@ -59,6 +59,7 @@ void move_snk(void_vec *snake_vec, const snk_state dir) {
   else if (dir == SNK_RIGHT && head_pos.x_pos < X_WIN_MAX - 2)
     head_pos.x_pos++;
   void_set(snake_vec, &head_pos, 0);
+  *state = dir;
 }
 
 void update_scr(const void_vec *snake_pos, const coord food_pos) {
