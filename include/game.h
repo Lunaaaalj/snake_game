@@ -54,7 +54,7 @@ const extern char TITLE[];
  * it recieves new input. Returns true if a resize event was handled, false
  * otherwise. */
 
-bool CheckInput(const int ch, snk_state *state);
+bool CheckInput(const int ch, snk_state *state,snk_state *requested);
 
 /* Recieves a mesage (either error msg or a succesful exit msg), terminates the
  * game and curses window and stdscr prints the mesage in the terminal buffer
@@ -64,7 +64,7 @@ void terminate_session(const char *msg, const int exit_code);
 
 /* updates the snake coordinates */
 
-void move_snk(void_vec *snake_vec, const snk_state dir);
+void move_snk(void_vec *snake_vec, const snk_state dir, snk_state *state);
 
 /* Updates the render of the snake in the screen */
 

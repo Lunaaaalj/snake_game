@@ -7,6 +7,7 @@ int main(void) {
   srand(now());
   char ch;
   snk_state state = SNK_NAN;
+  snk_state requested = SNK_NAN;
   long long start, end;
   void_vec snake_pos;
   init_void_vector(&snake_pos, 4, sizeof(coord));
@@ -42,13 +43,13 @@ int main(void) {
   init_sk_len(&snake_pos, SNK_LEN);
   start = now();
   while (true) {
-    if (CheckInput(wgetch(win), &state)) {
+    if (CheckInput(wgetch(win), &state,&requested)) {
       /* Resize occurred, redraw the screen */
       update_scr(&snake_pos, food_pos);
     }
     end = now();
-    if ((end - start) >= MOV_INTV && state != SNK_NAN) {
-      move_snk(&snake_pos, state);
+    if ((end - start) >= MOV_INTV && requested != SNK_NAN) {
+      move_snk(&snake_pos, requested, &state);
       if ((*(coord *)void_get(&snake_pos, 0)).y_pos == food_pos.y_pos &&
           (*(coord *)void_get(&snake_pos, 0)).x_pos == food_pos.x_pos) {
         snake_grow(&snake_pos);
@@ -81,6 +82,7 @@ int main(void) {
             update_scr(&snake_pos, food_pos);
             init_sk_len(&snake_pos, SNK_LEN);
             state = SNK_NAN;
+            requested = SNK_NAN;
             break;
           }
         }
