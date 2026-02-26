@@ -82,6 +82,7 @@ int main(void) {
             update_scr(&snake_pos, food_pos);
             init_sk_len(&snake_pos, SNK_LEN);
             state = SNK_NAN;
+            requested = SNK_NAN;
             break;
           }
         }
