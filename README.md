@@ -12,8 +12,12 @@ This is a terminal-based Snake game where the player controls a growing snake th
 - **Smooth snake movement** with configurable speed (10 movements per second)
 - **Collision detection** for walls and self-collision
 - **Dynamic snake growth** when eating food
+- **Scoring system** with live score display and persistent high score tracking
+- **High score persistence** stored in `files/high_score.txt`, survives game restarts
 - **Game restart functionality** after collision
 - **Keyboard controls** supporting both arrow keys and vim-style movement keys
+- **Terminal resize support** — the game window re-centers automatically on resize
+- **Minimum terminal size enforcement** at startup and on resize events
 
 ## Dependencies
 
@@ -33,7 +37,7 @@ This is a terminal-based Snake game where the player controls a growing snake th
 
 ### Build Tools
 
-- **CMake** (version 4.0 or higher)
+- **CMake** (version 3.15 or higher)
 - **C Compiler** with C99 support or later
 - **Address Sanitizer** support (enabled via `-fsanitize=address`)
 
@@ -103,6 +107,7 @@ The game supports two control schemes:
      - The window borders
      - Its own body segments
    - Upon collision, the snake turns into `X` characters
+   - The current score is shown; if a new high score was reached, "New Highest Score" is displayed
 
 5. **Restarting**:
    - After a collision, press **Enter** to restart the game
@@ -110,23 +115,25 @@ The game supports two control schemes:
 
 ### Game Window
 
-- **Window size**: 20 rows × 35 columns
+- **Window size**: 20 rows × 35 columns (centered in the terminal, adapts on resize)
 - **Snake representation**: 
   - Head: `#`
   - Body segments: `#`
   - When collided: `X`
 - **Food representation**: `*`
+- **Score display**: shown at the bottom center of the window during play
 - **Title**: "Snake" displayed at the top center of the window
 
 ## Technical Details
 
 ### Architecture
 
-The game consists of three main files:
+The game consists of four main files:
 
 1. **game.h** - Header file with function declarations and data structures
 2. **game.c** - Implementation of game logic functions
 3. **main.c** - Main game loop and initialization
+4. **files/high_score.txt** - Persistent storage for the high score
 
 ### Key Data Structures
 
@@ -147,23 +154,28 @@ The game consists of three main files:
 
 ### Core Functions
 
-- **`CheckInput()`**: Processes keyboard input and updates snake direction
+- **`CheckInput()`**: Processes keyboard input and updates the requested snake direction; also handles terminal resize events
 - **`move_snk()`**: Updates snake position based on current direction
-- **`update_scr()`**: Renders the game state to the screen
-- **`snake_food_gen()`**: Generates random food positions
+- **`update_scr()`**: Renders the game state (snake, food, score) to the screen
+- **`snake_food_gen()`**: Generates random food positions, guaranteed not to overlap the snake body
 - **`snake_grow()`**: Adds a new segment to the snake
 - **`snk_collided()`**: Detects collisions with walls or self
+- **`handle_resize()`**: Handles terminal resize events — re-centers the game window and returns `false` if the terminal is now too small
+- **`get_high_score()`**: Reads the high score from `files/high_score.txt`
+- **`write_high_score()`**: Writes the current high score to `files/high_score.txt`
+- **`disp_hscore()`**: Displays "New Highest Score" at the bottom of the window after a collision
 - **`terminate_session()`**: Cleanly exits the game
 
 ### Game Loop
 
 The main game loop operates at 10 movements per second (100ms interval):
-1. Check for keyboard input
+1. Check for keyboard input (including resize events)
 2. Update snake position every 100ms
-3. Check for food collision and grow snake if needed
-4. Check for wall/self collision
-5. Update screen rendering
-6. Handle game over and restart logic
+3. Check for food collision and grow snake + increment score if needed
+4. Update and persist high score if beaten
+5. Check for wall/self collision
+6. Update screen rendering (score shown at the bottom)
+7. Handle game over and restart logic
 
 ### Memory Management
 
@@ -175,35 +187,24 @@ The main game loop operates at 10 movements per second (100ms interval):
 
 ### Limitations
 
-1. **Fixed window size**: The game window is hardcoded to 20×35 characters and doesn't adapt to terminal size
+1. **Fixed window size**: The game window is hardcoded to 20×35 characters; the window is re-centered on resize but its dimensions do not change
 
 2. **External dependency**: Requires the custom `cvector` library which is not included in the repository. Users must install or provide this library separately.
 
-3. **CMake version**: Requires CMake version 4.0+, which may not be available on older systems (note: this is unusually high, CMake 4.0 doesn't exist as of 2024, likely should be 3.x)
-
-4. **Food overlap**: Food can spawn on the snake's body, making it immediately collectible or inaccessible
-
-5. **Movement constraints**: The snake cannot move through borders (stops at edges rather than wrapping around)
-
-6. **No scoring system**: The game doesn't track or display the player's score
-
-7. **No speed increase**: Game speed remains constant regardless of snake length
+3. **No speed increase**: Game speed remains constant regardless of snake length
 
 ### Potential Issues
 
-1. **Terminal size**: If your terminal is smaller than the game window, the rendering may be distorted
+1. **Terminal size**: If your terminal is smaller than the minimum required size (37 columns × 22 rows), the game will exit with an error message at startup or during a resize event.
 
 2. **Curses initialization**: The game assumes ncurses is properly installed and functional on your system
 
-3. **Food generation**: The random food generation doesn't check for collisions with the snake body
-
-4. **Minimum terminal size**: Ensure your terminal window is large enough to display the 20×35 game window plus borders
+3. **Minimum terminal size**: Ensure your terminal window is at least 37 columns × 22 rows to display the game
 
 ### Recommendations
 
-- Use a terminal with at least 40 columns × 25 rows for optimal display
+- Use a terminal with at least 37 columns × 22 rows for optimal display
 - Ensure the `cvector` library is properly installed before building
-- Consider modifying `CMakeLists.txt` to use a more standard CMake version (e.g., 3.10 or higher)
 
 ## Development
 
@@ -227,11 +228,28 @@ No license information is currently provided in the repository.
 
 This appears to be a personal/educational project. If you'd like to contribute, consider:
 - Adding a proper `cvector` library or replacing it with a standard implementation
-- Implementing a scoring system
-- Adding difficulty levels with increasing speed
+- Implementing difficulty levels with increasing speed
 - Implementing terminal size detection and adaptive window sizing
 - Adding color support for better visuals
-- Fixing the CMake version requirement
+
+## Release Notes
+
+### v1.1.0 — Score & High Score System (2026-03-01)
+
+- **Scoring**: The player now earns one point for each food item eaten. The current score is displayed at the bottom center of the game window during play.
+- **High score persistence**: The highest score achieved is stored in `files/high_score.txt` and persists across sessions. The file is updated immediately when the current score exceeds the stored high score.
+- **New Highest Score notification**: When a collision ends the game and the player has beaten the previous high score, a "New Highest Score" message replaces the score line at the bottom of the window.
+- **Food collision fix**: `snake_food_gen()` now re-rolls the food position if it overlaps any segment of the snake, ensuring food always spawns on a free cell.
+
+### v1.0.0 — Initial Release
+
+- Classic Snake gameplay in a 20×35 terminal window using ncurses
+- Arrow key and vim-style (h/j/k/l) controls
+- Self-collision and wall-collision detection
+- Dynamic snake growth on eating food
+- Terminal resize handling — game window re-centers automatically; exits gracefully if the terminal becomes too small (minimum 37 × 22)
+- Minimum terminal size validation at startup
+- Address Sanitizer enabled in debug builds
 
 ## Acknowledgments
 
