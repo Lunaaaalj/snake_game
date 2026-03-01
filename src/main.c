@@ -8,6 +8,7 @@ int main(void) {
   char ch;
   int score = 0;
   int high_score = get_high_score(PATH);
+  bool score_beaten = false;
   snk_state state = SNK_NAN;
   long long start, end;
   void_vec snake_pos;
@@ -40,13 +41,13 @@ int main(void) {
   coord head_coords = {.y_pos = Y_WIN_MAX / 2, .x_pos = X_WIN_MAX / 2};
   void_append(&snake_pos, &head_coords);
   snake_food_gen(&food_pos, &snake_pos);
-  update_scr(&snake_pos, food_pos);
+  update_scr(&snake_pos, food_pos,score);
   init_sk_len(&snake_pos, SNK_LEN);
   start = now();
   while (true) {
     if (CheckInput(wgetch(win), &state)) {
       /* Resize occurred, redraw the screen */
-      update_scr(&snake_pos, food_pos);
+      update_scr(&snake_pos, food_pos, score);
     }
     end = now();
     if ((end - start) >= MOV_INTV && state != SNK_NAN) {
@@ -58,13 +59,17 @@ int main(void) {
         if (score >= high_score) {
             high_score = score;
             write_high_score(high_score,PATH);
+            score_beaten = true;
         }
         snake_food_gen(&food_pos, &snake_pos);
       }
       if (snk_collided(&snake_pos)) {
         HEAD_CHAR = 'X';
         SEG_CHAR = 'X';
-        update_scr(&snake_pos, food_pos);
+        update_scr(&snake_pos, food_pos, score);
+        if (score_beaten) {
+          disp_hscore(high_score);
+        }
         while ((ch = wgetch(win)) != 'q') {
           if (ch == KEY_RESIZE) {
             if (!handle_resize()) {
@@ -75,7 +80,10 @@ int main(void) {
                        MIN_TERMINAL_WIDTH, MIN_TERMINAL_HEIGHT);
               terminate_session(error_msg, 1);
             }
-            update_scr(&snake_pos, food_pos);
+            update_scr(&snake_pos, food_pos, score);
+            if (score_beaten) {
+              disp_hscore(high_score);
+            }
           } else if (ch == KEY_ENTER || ch == '\n') {
             free_void_vector(&snake_pos);
             init_void_vector(&snake_pos, 4, sizeof(coord));
@@ -85,16 +93,18 @@ int main(void) {
             snake_food_gen(&food_pos, &snake_pos);
             HEAD_CHAR = '#';
             SEG_CHAR = '#';
-            update_scr(&snake_pos, food_pos);
+            update_scr(&snake_pos, food_pos, score);
             init_sk_len(&snake_pos, SNK_LEN);
             state = SNK_NAN;
+            score = 0;
+            score_beaten = false;
             break;
           }
         }
         if (ch == 'q')
           terminate_session("Session Terminated", 0);
       }
-      update_scr(&snake_pos, food_pos);
+      update_scr(&snake_pos, food_pos, score);
       start = end;
     }
   }

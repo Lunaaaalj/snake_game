@@ -71,7 +71,7 @@ void move_snk(void_vec *snake_vec, const snk_state dir);
 
 /* Updates the render of the snake in the screen */
 
-void update_scr(const void_vec *snake_pos, const coord food_pos);
+void update_scr(const void_vec *snake_pos, const coord food_pos, const int score);
 
 /* Returns a long long representing the number of miliseconds since an Epoch */
 
@@ -116,5 +116,9 @@ int get_high_score(const char *path);
 
 /* write the highest score in file */
 void write_high_score(const int high_score,const char *path);
+
+/* display the hightest score at the bottom of the window */
+
+void disp_hscore(const int high_score);
 
 #endif // GAME_H
