@@ -12,7 +12,7 @@ const char FOOD_CHAR = '*';
 const int MOV_INTV = 100; //  10 movements per second
 const char TITLE[] = "Snake";
 const int SNK_LEN = 2;
-const char PATH[] = "../files/high_score.txt";
+const char PATH[] = SNAKE_DATA_DIR "/high_score.txt";
 
 bool CheckInput(const int ch, snk_state *state,snk_state *requested) {
   if ((ch == 'j' || ch == KEY_DOWN) && *state != SNK_UP)
