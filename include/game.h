@@ -50,6 +50,9 @@ const extern int MOV_INTV; // MILISECONDS
 
 const extern char TITLE[];
 
+/* path to highest score file */
+const extern char PATH[];
+
 /* Expects to get a char input and decides where the character will move until
  * it recieves new input. Returns true if a resize event was handled, false
  * otherwise. */
@@ -109,9 +112,9 @@ extern const int MIN_TERMINAL_WIDTH;
 
 /* Get the highest score form file path */
 
-int get_high_score(char *path);
+int get_high_score(const char *path);
 
 /* write the highest score in file */
-void write_high_score(int high_score, char *path);
+void write_high_score(const int high_score,const char *path);
 
 #endif // GAME_H

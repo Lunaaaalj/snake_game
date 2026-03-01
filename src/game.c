@@ -12,6 +12,7 @@ const char FOOD_CHAR = '*';
 const int MOV_INTV = 100; //  10 movements per second
 const char TITLE[] = "Snake";
 const int SNK_LEN = 2;
+const char PATH[] = "../files/high_score.txt";
 
 bool CheckInput(const int ch, snk_state *state) {
   if ((ch == 'j' || ch == KEY_DOWN) && *state != SNK_UP)
@@ -165,7 +166,7 @@ bool handle_resize(void) {
 }
 
 /* get the highest score in a path */
-int get_high_score(char *path) {
+int get_high_score(const char *path) {
 FILE *file;
 int score;
 file = fopen(path,"r");
@@ -177,7 +178,7 @@ return score;
 
 /* write the highest score in a path */
 
-void write_high_score(int score ,char *path) {
+void write_high_score(const int score ,const char *path) {
 FILE *file;
 file = fopen(path, "w");
 if (!file) terminate_session("File not found",1);
