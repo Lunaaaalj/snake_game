@@ -3,3 +3,5 @@
 */_codeql_*
 
 /.vscode
+
+.cache/

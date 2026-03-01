@@ -12,6 +12,7 @@ const char FOOD_CHAR = '*';
 const int MOV_INTV = 100; //  10 movements per second
 const char TITLE[] = "Snake";
 const int SNK_LEN = 2;
+const char PATH[] = "../files/high_score.txt";
 
 bool CheckInput(const int ch, snk_state *state,snk_state *requested) {
   if ((ch == 'j' || ch == KEY_DOWN) && *state != SNK_UP)
@@ -62,7 +63,7 @@ void move_snk(void_vec *snake_vec, const snk_state dir, snk_state *state) {
   *state = dir;
 }
 
-void update_scr(const void_vec *snake_pos, const coord food_pos) {
+void update_scr(const void_vec *snake_pos, const coord food_pos, const int score) {
   wclear(win);
   mvwprintw(win, (*(coord *)void_get(snake_pos, 0)).y_pos,
             (*(coord *)void_get(snake_pos, 0)).x_pos, "%c", HEAD_CHAR);
@@ -73,6 +74,8 @@ void update_scr(const void_vec *snake_pos, const coord food_pos) {
   mvwprintw(win, food_pos.y_pos, food_pos.x_pos, "%c", FOOD_CHAR);
   box(win, 0, 0);
   mvwprintw(win, 0, X_WIN_MAX / 2 - strlen(TITLE) / 2, "%s", TITLE);
+  char str[] = "Score:";
+  mvwprintw(win, Y_WIN_MAX-1, X_WIN_MAX /2 - (strlen(str) + 4) / 2, "%s %3d", str, score);
   wrefresh(win);
 }
 
@@ -163,4 +166,33 @@ bool handle_resize(void) {
   refresh();
 
   return true;
+}
+
+/* get the highest score in a path */
+int get_high_score(const char *path) {
+    FILE *file;
+    int score;
+    file = fopen(path,"r");
+    if (!file) terminate_session("File not found",1);
+    fscanf(file,"%d",&score);
+    fclose(file);
+    return score;
+}
+
+/* write the highest score in a path */
+
+void write_high_score(const int score ,const char *path) {
+    FILE *file;
+    file = fopen(path, "w");
+    if (!file) terminate_session("File not found",1);
+    fprintf(file, "%d", score);
+    fclose(file);
+    return;
+}
+
+/* display the hightest score */
+void disp_hscore(const int high_score) {
+    char str[] = "New Highest Score:";
+    mvwprintw(win,Y_WIN_MAX - 1,X_WIN_MAX /2 - (strlen(str) + 4) / 2,"%s %3d",str, high_score);
+    wrefresh(win);
 }
