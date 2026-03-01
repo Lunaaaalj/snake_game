@@ -175,3 +175,14 @@ fclose(file);
 return score;
 }
 
+/* write the highest score in a path */
+
+void write_high_score(int score ,char *path) {
+FILE *file;
+file = fopen(path, "w");
+if (!file) terminate_session("File not found",1);
+fprintf(file, "%d", score);
+fclose(file);
+return;
+}
+
