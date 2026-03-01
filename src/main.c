@@ -7,7 +7,7 @@ int main(void) {
   srand(now());
   char ch;
   int score = 0;
-  int high_score;
+  int high_score = get_high_score(PATH);
   snk_state state = SNK_NAN;
   long long start, end;
   void_vec snake_pos;
@@ -54,6 +54,11 @@ int main(void) {
       if ((*(coord *)void_get(&snake_pos, 0)).y_pos == food_pos.y_pos &&
           (*(coord *)void_get(&snake_pos, 0)).x_pos == food_pos.x_pos) {
         snake_grow(&snake_pos);
+        score++;
+        if (score >= high_score) {
+            high_score = score;
+            write_high_score(high_score,PATH);
+        }
         snake_food_gen(&food_pos, &snake_pos);
       }
       if (snk_collided(&snake_pos)) {
