@@ -70,6 +70,12 @@ This is a terminal-based Snake game where the player controls a growing snake th
    ./snake
    ```
 
+6. *(Optional)* Install the game system-wide:
+   ```bash
+   sudo make install
+   ```
+   This installs the `snake` binary to the system bin directory (e.g. `/usr/local/bin`) and the high score file to the data directory (e.g. `/usr/local/share/snake/high_score.txt`).
+
 ## How to Play
 
 ### Controls
