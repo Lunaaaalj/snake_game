@@ -163,3 +163,15 @@ bool handle_resize(void) {
 
   return true;
 }
+
+/* get the highest score in a path */
+int get_high_score(char *path) {
+FILE *file;
+int score;
+file = fopen(path,"r");
+if (!file) terminate_session("File not found",1);
+fscanf(file,"%d",&score);
+fclose(file);
+return score;
+}
+

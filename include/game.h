@@ -107,4 +107,11 @@ bool handle_resize(void);
 extern const int MIN_TERMINAL_HEIGHT;
 extern const int MIN_TERMINAL_WIDTH;
 
+/* Get the highest score form file path */
+
+void get_high_score(char *path);
+
+/* write the highest score in file */
+void write_high_score(int high_score, char *path);
+
 #endif // GAME_H

@@ -6,6 +6,8 @@
 int main(void) {
   srand(now());
   char ch;
+  int score = 0;
+  int high_score;
   snk_state state = SNK_NAN;
   long long start, end;
   void_vec snake_pos;
